@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'vnet_sc'
+      backendAzureRmResourceGroupName: 'chaithratestrg'
+      backendAzureRmStorageAccountName: 'chaithratfstorage'
+      backendAzureRmContainerName: 'tfstate1'
+      backendAzureRmKey: 'terraformvnet.tfstate'
+
+
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      environmentServiceNameAzureRM: 'vnet_sc'
+
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      environmentServiceNameAzureRM: 'vnet_sc'
+
